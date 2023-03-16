@@ -25,7 +25,6 @@ service /flow1 on new http:Listener (9090){
             User newEntry = {...userEntry, code:check mailer};
             userTable.add(newEntry);
             error? tempUserStore = googleSheets:writeToSheet(Rownum,newEntry.toArray());
-            Rownum +=1;
             return userEntry;
         }
     }
