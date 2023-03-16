@@ -1,7 +1,7 @@
 import ballerina/http;
-import flow1.email;
+//import flow1.email;
 import flow1.fileAccess;
-import flow1.googleSheets;
+//import flow1.googleSheets;
 
 int Rownum = 1;
 
@@ -23,10 +23,11 @@ service /flow1 on new http:Listener (9090){
             };
         } else {
             //string|error? code = codegen:genCode();
-            string|error mailer  = email:sendEmail(toemail);
-            User newEntry = {...userEntry, code:check mailer};
+            //string|error mailer  = email:sendEmail(toemail);
+            //User newEntry = {...userEntry, code:check mailer};
+            User newEntry = {...userEntry, code:"1234"};
             userTable.add(newEntry);
-            error? tempUserStore = googleSheets:writeToSheet(Rownum,newEntry.toArray());
+            //error? tempUserStore = googleSheets:writeToSheet(Rownum,newEntry.toArray());
             Rownum +=1;
             error? data = fileAccess:saveData(newEntry, userEntry.email);
             return userEntry;
