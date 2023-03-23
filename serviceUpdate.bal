@@ -1,15 +1,10 @@
 import ballerina/http;
 import flow1.email;
-import ballerinax/mysql;
-import ballerinax/mysql.driver as _;
-import ballerina/sql;
-import ballerina/io;
+import flow1.googleSheets;
 
 int Rownum = 1;
-mysql:Client dbClient = check new ("sql12.freesqldatabase.com", "sql12607944", "AbEVTdgXmA", "sql12607944", 3306);
 
 service /flow1 on new http:Listener (9090){
-
     resource function get users() returns User[] {
         return userTable.toArray();
     }
@@ -28,11 +23,8 @@ service /flow1 on new http:Listener (9090){
             string|error mailer  = email:sendEmail(toemail);
             User newEntry = {...userEntry, code: check mailer};
             userTable.add(newEntry);
-            error? data = createUser(newEntry.email, newEntry.name, newEntry.country, newEntry.code);
-            FullUser userResult = check getUser("abc@gmail.com");
-            io:println(userResult.email);
-            io:println(userResult.name);
-            io:println(userResult.country);
+            error? tempUserStore = googleSheets:writeToSheet(Rownum,newEntry.toArray());
+            Rownum +=1;
             return userEntry;
         }
     }
@@ -83,16 +75,3 @@ public type InvalidEmailError record {|
     *http:NotFound;
     ErrorMsg body;
 |};
-
-function createUser(string email, string name, string country, string code) returns error?{
-    sql:ParameterizedQuery query = `INSERT INTO TemporaryUserStore(email, name, country, code)
-                                  VALUES (${email}, ${name}, ${country}, ${code})`;
-    sql:ExecutionResult result = check dbClient->execute(query);
-}
-
-function getUser(string email) returns FullUser|error{
-    sql:ParameterizedQuery query = `SELECT * FROM TemporaryUserStore
-                                    WHERE email = ${email}`;
-    FullUser resultRow = check dbClient->queryRow(query);
-    return resultRow;
-}
