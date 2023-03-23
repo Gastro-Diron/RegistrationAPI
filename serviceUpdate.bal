@@ -6,7 +6,7 @@ import ballerina/sql;
 // import ballerina/io;
 
 int Rownum = 1;
-mysql:Client dbClient = check new ("sql12.freesqldatabase.com", "sql12607670", "Kp4bevX1b8", "sql12607670", 3306);
+mysql:Client dbClient = check new ("localhost", "root", "root@1921", "DB1", 3306);
 
 service /flow1 on new http:Listener (9090){
 
@@ -29,10 +29,6 @@ service /flow1 on new http:Listener (9090){
             User newEntry = {...userEntry, code: check mailer};
             userTable.add(newEntry);
             error? data = createUser(newEntry.email, newEntry.name, newEntry.country, newEntry.code);
-            // FullUser userResult = check getUser("summa@gmail.com");
-            // io:println(userResult.email);
-            // io:println(userResult.name);
-            // io:println(userResult.country);
             return userEntry;
         }
     }
@@ -90,10 +86,3 @@ function createUser(string email, string name, string country, string code) retu
                                   VALUES (${email}, ${name}, ${country}, ${code})`;
     sql:ExecutionResult result = check dbClient->execute(query);
 }
-
-// function getUser(string email) returns FullUser|error{
-//     sql:ParameterizedQuery query = `SELECT * FROM User_Details
-//                                     WHERE email = ${email}`;
-//     FullUser resultRow = check dbClient->queryRow(query);
-//     return resultRow;
-// }
