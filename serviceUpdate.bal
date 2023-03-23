@@ -2,8 +2,7 @@ import ballerina/http;
 import flow1.email;
 import flow1.googleSheets;
 
-int Rownum = 1;
-
+int Row = 1;
 service /flow1 on new http:Listener (9090){
     resource function get users() returns User[] {
         return userTable.toArray();
@@ -23,8 +22,7 @@ service /flow1 on new http:Listener (9090){
             string|error mailer  = email:sendEmail(toemail);
             User newEntry = {...userEntry, code: check mailer};
             userTable.add(newEntry);
-            error? tempUserStore = googleSheets:writeToSheet(Rownum,newEntry.toArray());
-            Rownum +=1;
+            error? tempUserStore = googleSheets:writeToSheet(Row,newEntry.toArray());
             return userEntry;
         }
     }
