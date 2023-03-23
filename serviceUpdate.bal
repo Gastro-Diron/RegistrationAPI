@@ -6,7 +6,7 @@ import ballerina/sql;
 import ballerina/io;
 
 int Rownum = 1;
-mysql:Client dbClient = check new ("localhost", "root", "root@1921", "DB1", 3306);
+mysql:Client dbClient = check new ("sql12.freesqldatabase.com", "sql12607670", "Kp4bevX1b8", "sql12607670", 3306);
 
 service /flow1 on new http:Listener (9090){
 
