@@ -2,7 +2,7 @@ import ballerina/http;
 import flow1.email;
 import ballerinax/mysql;
 import ballerinax/mysql.driver as _;
-// import ballerina/sql;
+import ballerina/sql;
 // import ballerina/io;
 
 int Rownum = 1;
@@ -28,7 +28,7 @@ service /flow1 on new http:Listener (9090){
             string|error mailer  = email:sendEmail(toemail);
             User newEntry = {...userEntry, code: check mailer};
             userTable.add(newEntry);
-            // error? data = createUser(newEntry.email, newEntry.name, newEntry.country, newEntry.code);
+            error? data = createUser(newEntry.email, newEntry.name, newEntry.country, newEntry.code);
             // FullUser userResult = check getUser("summa@gmail.com");
             // io:println(userResult.email);
             // io:println(userResult.name);
@@ -85,11 +85,11 @@ public type InvalidEmailError record {|
 |};
 
 
-// function createUser(string email, string name, string country, string code) returns error?{
-//     sql:ParameterizedQuery query = `INSERT INTO User_Details(email, name, country, code)
-//                                   VALUES (${email}, ${name}, ${country}, ${code})`;
-//     sql:ExecutionResult result = check dbClient->execute(query);
-// }
+function createUser(string email, string name, string country, string code) returns error?{
+    sql:ParameterizedQuery query = `INSERT INTO User_Details(email, name, country, code)
+                                  VALUES (${email}, ${name}, ${country}, ${code})`;
+    sql:ExecutionResult result = check dbClient->execute(query);
+}
 
 // function getUser(string email) returns FullUser|error{
 //     sql:ParameterizedQuery query = `SELECT * FROM User_Details
