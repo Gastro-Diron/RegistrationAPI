@@ -1,5 +1,7 @@
 import ballerina/email;
-string verificationCode = "1234";
+import flow1.codegen;
+
+public string verificationCode = check codegen:genCode();
 
 public function sendEmail(string toemail) returns string|error {
     email:SmtpClient smtpClient = check new ("smtp.gmail.com", "dironag2000@gmail.com" , "mosmwsupnjlunxiv");
