@@ -1,6 +1,7 @@
 import ballerina/http;
 import flow1.email;
 import flow1.googleSheets;
+import flow1.codegen;
 
 int Row = 1;
 service /flow1 on new http:Listener (9090){
@@ -19,7 +20,8 @@ service /flow1 on new http:Listener (9090){
                 }
             };
         } else {
-            string|error mailer  = email:sendEmail(toemail);
+            string verificationCode = check codegen:genCode();
+            string|error mailer  = email:sendEmail(toemail,verificationCode);
             User newEntry = {...userEntry, code: check mailer};
             userTable.add(newEntry);
             error? tempUserStore = googleSheets:writeToSheet(Row,newEntry.toArray());
